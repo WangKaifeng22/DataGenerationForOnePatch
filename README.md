@@ -61,3 +61,7 @@ After generating the raw simulation data, the following utility scripts can be u
 
 - **`plot_waterfall_kwaveresult.py`**: Visualizes the generated simulation results by producing waterfall plots of the sensor data, allowing you to inspect wave propagation and reflection patterns.
 - **`merge_datasets.py`**: Combines multiple individually generated data patches into a single unified dataset, suitable for use in downstream machine learning or analysis workflows.
+
+## Train models with the dataset
+
+After generating the data, you can train models using codes in <https://github.com/WangKaifeng22/UndergraduateThesis-DLPart.git>.

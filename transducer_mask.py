@@ -364,7 +364,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--mask-threshold", type=float, default=0.5, help="回采样后二值化阈值，默认 0.5")
     parser.add_argument("--save-mask", type=str, default=None, help="保存 .npy 掩膜的路径")
     parser.add_argument("--sos-map", type=str, default=None, help="可选：用于叠加显示的声速图 .npy 路径")
-    parser.add_argument("--mm-per-pixel", type=float, default=1.0, help="物理坐标缩放（每像素毫米数），与 my_test.py 一致")
+    parser.add_argument("--mm-per-pixel", type=float, default=0.1, help="物理坐标缩放（每像素毫米数），与 my_test.py 一致")
     parser.add_argument("--origin", type=str, default="lower", choices=["lower", "upper"], help="imshow 原点方向，默认 lower")
     parser.add_argument("--axis-unit", type=str, default="mm", help="坐标轴物理单位标签，默认 mm")
     parser.add_argument("--save-figure", type=str, default=None, help="可选：叠加图保存路径（如 .png）")

@@ -146,9 +146,11 @@ def per_SoSMap_Kwave(use_single: bool = True, worker_temp_dir: str = None, rand_
 
         """plt.figure(dpi=500)
         plt.imshow(combined_sensor_data, aspect='auto', vmin=-1, vmax=1, cmap=get_color_map())
-        plt.ylabel('Sensor Position')
-        plt.xlabel('Time Step')
-        plt.colorbar()
+        plt.ylabel('Transducer index',fontsize=14)
+        plt.xlabel('Time Step',fontsize=14)
+        cbar = plt.colorbar()
+        cbar.ax.tick_params(labelsize=12)
+        cbar.set_label("Amplitude", fontsize=14)
         plt.show()"""
 
     np.savez(save_path, time_data_cat=time_data_cat, sensor_coords=sensor_coords)

@@ -30,6 +30,7 @@ def generate_sos_maps(
     prob_no_inclusion: float = 0.1,
     sharpness: float = 3.5,
     texture_strength: float = 0.2,
+    bound: Tuple[float, float, float, float] = (0.2, 0.8, 0.2, 0.8),
 ):
     """
     Python 版本：GenerateSoSMaps
@@ -77,7 +78,7 @@ def generate_sos_maps(
             futures.append(ex.submit(
                 generate_inclusion_mask,
                 HR_size,
-                (0.2, 0.8, 0.2, 0.8),
+                bound,
                 use_single,
                 prob_no_inclusion,
                 ellipses_range,

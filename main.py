@@ -75,7 +75,7 @@ def main():
                 os.makedirs(SoSMaps_output_dir)
             generate_sos_maps(SoSMaps_output_dir,data_num,start_num,length_scale_bg,length_scale_inc,
                               use_single=use_single,ellipses_range=(1, 2), pool_size=pool_size, plot_samples=False
-                              ,sharpness=3.5, texture_strength=0.2)
+                              ,sharpness=3.5, texture_strength=0.2, bound=(0.2, 0.8, 0.2, 0.8))
 
 
         Kwave_output_dir = os.path.join(output_dir, 'KwaveResult', dir_name)

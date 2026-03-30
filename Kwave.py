@@ -65,7 +65,7 @@ def per_SoSMap_Kwave(use_single: bool = True, worker_temp_dir: str = None, rand_
     
     if use_cpu:
         num_threads = 1
-        kwave_function_name = "kspaceFirstOrder2D"
+        kwave_function_name = None
         is_gpu = False
     else:
         num_threads = 1
@@ -129,8 +129,14 @@ def per_SoSMap_Kwave(use_single: bool = True, worker_temp_dir: str = None, rand_
 
         if use_cpu:
             sensor_data = kspaceFirstOrder(
-                kgrid=kgrid, medium=medium, source=source, sensor=sensor, simulation_options=simulation_options,
-
+                kgrid=kgrid, medium=medium, source=source, sensor=sensor,
+                data_path=worker_temp_dir,  # 相对路径基准目录
+                pml_inside=True,
+                pml_size=PML_size,
+                pml_alpha=cfg.PMLAlpha_default,
+                use_sg=True,
+                backend="python",
+                device="cpu"
             )
         else:
             sensor_data = kspace_first_order_2d_gpu(
@@ -139,7 +145,8 @@ def per_SoSMap_Kwave(use_single: bool = True, worker_temp_dir: str = None, rand_
             )
 
         sensor_data = sensor_data["p"]
-        sensor_data = sensor_data.T
+        if not use_cpu:
+            sensor_data = sensor_data.T
 
         # Explicitly pin order to avoid future default-order changes affecting training data.
         combined_sensor_data = karray.combine_sensor_data(kgrid, sensor_data, order="C")

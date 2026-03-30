@@ -281,26 +281,43 @@ def overlay_mask_on_sos(
     sound_speed_map: np.ndarray,
     mask: np.ndarray,
     mask_threshold: float = 0.5,
+    mm_per_pixel: float = 1.0,
+    origin: str = "lower",
+    axis_unit: str = "mm",
     save_path: str | Path | None = None,
     show: bool = False,
     title: str = "Sound speed map with transducer mask",
 ) -> None:
-    """把阵元掩膜叠加到声速图上，便于论文作图。"""
+    """把阵元掩膜叠加到声速图上，便于论文作图。
+
+    坐标范围按 mm_per_pixel 转换为物理坐标，范围与 my_test.py 保持一致：
+    [0, Ny * mm_per_pixel] x [0, Nx * mm_per_pixel]。
+    """
     binary_mask = _to_binary_mask(mask, target_shape=sound_speed_map.shape, mask_threshold=mask_threshold)
 
+    if mm_per_pixel <= 0:
+        raise ValueError(f"mm_per_pixel must be > 0, got {mm_per_pixel}")
+    if origin not in {"lower", "upper"}:
+        raise ValueError(f"origin must be 'lower' or 'upper', got {origin}")
+
+    rows, cols = sound_speed_map.shape
+    extent = [0.0, cols * mm_per_pixel, 0.0, rows * mm_per_pixel]
+
     fig, ax = plt.subplots(figsize=(6, 6))
-    im = ax.imshow(sound_speed_map, cmap="viridis", origin="upper")
+    im = ax.imshow(sound_speed_map, cmap="viridis", origin=origin, extent=extent, aspect="auto")
     overlay = np.ma.masked_where(binary_mask == 0, binary_mask)
     ax.imshow(
         overlay,
         cmap=ListedColormap(["#ff2d55"]),
-        origin="upper",
+        origin=origin,
+        extent=extent,
         interpolation="nearest",
         alpha=0.95,
+        aspect="auto",
     )
     #ax.set_title(title)
-    ax.set_xlabel("y", fontsize=14)
-    ax.set_ylabel("x", fontsize=14)
+    ax.set_xlabel(f"Y ({axis_unit})", fontsize=14)
+    ax.set_ylabel(f"X ({axis_unit})", fontsize=14)
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="4%", pad=0.08)
     cbar = fig.colorbar(im, cax=cax)
@@ -347,6 +364,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--mask-threshold", type=float, default=0.5, help="回采样后二值化阈值，默认 0.5")
     parser.add_argument("--save-mask", type=str, default=None, help="保存 .npy 掩膜的路径")
     parser.add_argument("--sos-map", type=str, default=None, help="可选：用于叠加显示的声速图 .npy 路径")
+    parser.add_argument("--mm-per-pixel", type=float, default=1.0, help="物理坐标缩放（每像素毫米数），与 my_test.py 一致")
+    parser.add_argument("--origin", type=str, default="lower", choices=["lower", "upper"], help="imshow 原点方向，默认 lower")
+    parser.add_argument("--axis-unit", type=str, default="mm", help="坐标轴物理单位标签，默认 mm")
     parser.add_argument("--save-figure", type=str, default=None, help="可选：叠加图保存路径（如 .png）")
     parser.add_argument("--show", action="store_true", help="是否显示图像窗口")
     return parser.parse_args()
@@ -375,6 +395,9 @@ def main() -> None:
             sound_speed_map=sound_speed_map,
             mask=mask,
             mask_threshold=args.mask_threshold,
+            mm_per_pixel=args.mm_per_pixel,
+            origin=args.origin,
+            axis_unit=args.axis_unit,
             save_path=args.save_figure,
             show=args.show,
             title=f"Transducer mask overlay (shift={args.rand_shift_grid} grid)",

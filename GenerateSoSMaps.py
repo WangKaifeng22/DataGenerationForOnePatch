@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Tuple, List, Optional
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import matplotlib.pyplot as plt
+from kwave.utils.filters import sharpness
 from scipy.ndimage import gaussian_filter
 
 
@@ -27,6 +28,8 @@ def generate_sos_maps(
     ellipses_range: Tuple[int, int] = (1, 2),
     pool_size: Optional[int] = None,
     prob_no_inclusion: float = 0.1,
+    sharpness: float = 3.5,
+    texture_strength: float = 0.2,
 ):
     """
     Python 版本：GenerateSoSMaps
@@ -95,6 +98,8 @@ def generate_sos_maps(
         length_scale_bg,
         length_scale_inc,
         use_single,
+        sharpness=sharpness,
+        texture_strength=texture_strength,
     )
 
     # 5) 合成与保存（并行）
@@ -137,6 +142,8 @@ def generate_batch_fields(
     phy_length_scale: float,
     phy_length_scale_inc: float,
     use_single: bool,
+    sharpness: float,
+    texture_strength: float,
 ):
     try:
         print(f"正在调用 GRF 生成 {n_samples} 个样本...")
@@ -147,6 +154,8 @@ def generate_batch_fields(
             physical_length_scale=phy_length_scale,
             grid_spacing=grid_spacing,
             plot=False,
+            sharpness=sharpness,
+            texture_strength=texture_strength,
         )
         inc_batch = generate_grf(
             img_size=img_size,
@@ -155,6 +164,8 @@ def generate_batch_fields(
             physical_length_scale=phy_length_scale_inc,
             grid_spacing=grid_spacing,
             plot=False,
+            sharpness=sharpness,
+            texture_strength=texture_strength,
         )
         if use_single:
             bg_batch = bg_batch.astype(np.float32)

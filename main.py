@@ -59,7 +59,7 @@ def main():
     data_num = 1 # 每个idx生成声速图的数量
     start_num = 1
     use_single = True
-    length_scale_bg_list = [2e-3]
+    length_scale_bg_list = [3e-3]
     length_scale_inc_list = [2e-3]
 
     output_dir = r"./dataset"  # 输出目录

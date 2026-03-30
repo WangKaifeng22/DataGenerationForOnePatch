@@ -304,7 +304,7 @@ def overlay_mask_on_sos(
     extent = [0.0, cols * mm_per_pixel, 0.0, rows * mm_per_pixel]
 
     fig, ax = plt.subplots(figsize=(6, 6))
-    im = ax.imshow(sound_speed_map, cmap="viridis", origin=origin, extent=extent, aspect="auto")
+    im = ax.imshow(sound_speed_map, cmap="viridis", origin=origin, extent=extent, aspect="equal")
     overlay = np.ma.masked_where(binary_mask == 0, binary_mask)
     ax.imshow(
         overlay,
@@ -313,7 +313,7 @@ def overlay_mask_on_sos(
         extent=extent,
         interpolation="nearest",
         alpha=0.95,
-        aspect="auto",
+        aspect="equal",
     )
     #ax.set_title(title)
     ax.set_xlabel(f"Y ({axis_unit})", fontsize=14)

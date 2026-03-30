@@ -14,6 +14,7 @@ from kwave.kmedium import kWaveMedium
 from kwave.ksensor import kSensor
 from kwave.ksource import kSource
 from kwave.kspaceFirstOrder2D import kspaceFirstOrder2D, kspace_first_order_2d_gpu
+from kwave.kspaceFirstOrder import kspaceFirstOrder
 from kwave.kspaceLineRecon import kspaceLineRecon
 from kwave.options.simulation_execution_options import SimulationExecutionOptions
 from kwave.options.simulation_options import SimulationOptions
@@ -124,12 +125,12 @@ def per_SoSMap_Kwave(use_single: bool = True, worker_temp_dir: str = None, rand_
         source_sig_array = np.zeros((cfg.element_num, kgrid.Nt))
         source_sig_array[ind, :] = source_sig
 
-        source.p = karray.get_distributed_source_signal(kgrid, source_sig_array)
+        source.p = karray.get_distributed_source_signal(kgrid, source_sig_array, order="C")
 
         if use_cpu:
-            sensor_data = kspaceFirstOrder2D(
+            sensor_data = kspaceFirstOrder(
                 kgrid=kgrid, medium=medium, source=source, sensor=sensor, simulation_options=simulation_options,
-                execution_options=execution_options
+
             )
         else:
             sensor_data = kspace_first_order_2d_gpu(
@@ -140,7 +141,8 @@ def per_SoSMap_Kwave(use_single: bool = True, worker_temp_dir: str = None, rand_
         sensor_data = sensor_data["p"]
         sensor_data = sensor_data.T
 
-        combined_sensor_data = karray.combine_sensor_data(kgrid, sensor_data)
+        # Explicitly pin order to avoid future default-order changes affecting training data.
+        combined_sensor_data = karray.combine_sensor_data(kgrid, sensor_data, order="C")
 
         time_data_cat[ind, :, :] = combined_sensor_data
 

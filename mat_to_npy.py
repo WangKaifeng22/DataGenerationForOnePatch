@@ -115,7 +115,7 @@ def convert_batch_rf_data(input_dir: str, output_dir: str) -> None:
 
     print(f"Found {len(rf_files)} RF_data mat files in: {input_dir}")
     for index, mat_path in rf_files:
-        output_name = f"RF_data{index:05d}.npz"
+        output_name = f"sample_{index:06d}.npz"
         output_path = os.path.join(output_dir, output_name)
         print(f"Converting {os.path.basename(mat_path)} -> {output_name}")
         convert_mat_to_kwave_npz(mat_path, output_path)
@@ -144,7 +144,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output-dir",
         default=None,
-        help="Batch mode output folder for RF_dataxxxxx.npz files. Default: same as --input-dir",
+        help="Batch mode output folder for sample_xxxxxx.npz files. Default: same as --input-dir",
     )
     args = parser.parse_args()
 

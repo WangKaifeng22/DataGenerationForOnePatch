@@ -64,4 +64,4 @@ After generating the raw simulation data, the following utility scripts can be u
 
 ## Train models with the dataset
 
-After generating the data, you can train models using codes in <(https://github.com/WangKaifeng22/SinglePatchSoSReconstruction.git)>.
+After generating the data, you can train models using codes in https://github.com/WangKaifeng22/SinglePatchSoSReconstruction.git.
